@@ -361,6 +361,48 @@
                 }
             }
         },
+        "/api/peripheral/count": {
+            "get": {
+                "tags": [
+                    "peripheral-controller"
+                ],
+                "operationId": "peripheralCount",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/gateway/count": {
+            "get": {
+                "tags": [
+                    "gateway-controller"
+                ],
+                "operationId": "gatewayCount",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "integer",
+                                    "format": "int64"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/gateway/by-name/{term}": {
             "get": {
                 "tags": [

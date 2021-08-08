@@ -309,6 +309,49 @@ export class GatewayControllerService extends BaseService {
   }
 
   /**
+   * Path part for operation gatewayCount
+   */
+  static readonly GatewayCountPath = '/api/gateway/count';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `gatewayCount()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  gatewayCount$Response(params?: {
+  }): Observable<StrictHttpResponse<number>> {
+
+    const rb = new RequestBuilder(this.rootUrl, GatewayControllerService.GatewayCountPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: parseFloat(String((r as HttpResponse<any>).body)) }) as StrictHttpResponse<number>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `gatewayCount$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  gatewayCount(params?: {
+  }): Observable<number> {
+
+    return this.gatewayCount$Response(params).pipe(
+      map((r: StrictHttpResponse<number>) => r.body as number)
+    );
+  }
+
+  /**
    * Path part for operation findGatewayByName
    */
   static readonly FindGatewayByNamePath = '/api/gateway/by-name/{term}';

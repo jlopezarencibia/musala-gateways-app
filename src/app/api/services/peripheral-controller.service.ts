@@ -254,4 +254,47 @@ export class PeripheralControllerService extends BaseService {
     );
   }
 
+  /**
+   * Path part for operation peripheralCount
+   */
+  static readonly PeripheralCountPath = '/api/peripheral/count';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `peripheralCount()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  peripheralCount$Response(params?: {
+  }): Observable<StrictHttpResponse<number>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PeripheralControllerService.PeripheralCountPath, 'get');
+    if (params) {
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return (r as HttpResponse<any>).clone({ body: parseFloat(String((r as HttpResponse<any>).body)) }) as StrictHttpResponse<number>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `peripheralCount$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  peripheralCount(params?: {
+  }): Observable<number> {
+
+    return this.peripheralCount$Response(params).pipe(
+      map((r: StrictHttpResponse<number>) => r.body as number)
+    );
+  }
+
 }

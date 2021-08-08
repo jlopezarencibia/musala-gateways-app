@@ -4,6 +4,7 @@ import { GatewayListComponent } from './gateway-list.component';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {NgbPaginationModule} from "@ng-bootstrap/ng-bootstrap";
 import {RouterModule} from "@angular/router";
+import {FormsModule} from "@angular/forms";
 
 
 
@@ -18,7 +19,8 @@ import {RouterModule} from "@angular/router";
         CommonModule,
         FontAwesomeModule,
         NgbPaginationModule,
-        RouterModule.forChild([{path: '', component: GatewayListComponent}])
+        RouterModule.forChild([{path: '', component: GatewayListComponent}]),
+        FormsModule
     ]
 })
 export class GatewayListModule { }

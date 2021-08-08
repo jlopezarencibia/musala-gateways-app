@@ -1,1 +1,54 @@
-<p>gateway-edit works!</p>
+<div class="mb-4 d-flex align-items-center">
+    <div class="flex-grow-1 h4 m-0">{{title}}</div>
+</div>
+<div class="card">
+    <form (ngSubmit)="submit()">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="gatewayName">Gateway name</label>
+                        <input class="form-control" type="text" id="gatewayName" name="gatewayName" required
+                               [(ngModel)]="name">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="gatewaySerial">Serial number</label>
+                        <input class="form-control" type="text" id="gatewaySerial" name="gatewaySerial" required
+                               [(ngModel)]="serial">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="gatewayIp">IPv4 address</label>
+                        <input class="form-control" type="text" id="gatewayIp" name="gatewayIp" required
+                               [(ngModel)]="ip">
+                    </div>
+                </div>
+            </div>
+            <ngb-alert type="danger" [dismissible]="false" class="mb-0" *ngIf="formError">
+                <div class="font-weight-bold">There are errors in the form</div>
+                <div class="small" style="opacity: .75">
+                Please check that all the fields are filled and the IPv4 address entered is valid.
+                </div>
+            </ngb-alert>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between" *ngIf="!(loading$ | async); else loading">
+                <button routerLink="/" class="btn btn-link">Cancel</button>
+                <button class="btn btn-primary" type="submit">
+                    <fa-icon [icon]="icSave" class="mr-2"></fa-icon>
+                    Save
+                </button>
+            </div>
+            <ng-template #loading>
+                <div class="d-flex align-items-center justify-content-center">
+                    <fa-icon [icon]="icSpinner" [spin]="true" class="text-primary" size="2x"></fa-icon>
+                </div>
+            </ng-template>
+        </div>
+    </form>
+</div>
+
+
