@@ -2,3 +2,22 @@
 
 /* Importing Bootstrap SCSS file. */
 @import '~bootstrap/scss/bootstrap';
+@import "./colors";
+
+.app-bg {
+  background-color: $gray-2;
+}
+
+.text-geek-blue {
+  color: $geek-blue-6;
+}
+
+ul {
+    margin-bottom: 0 !important;
+}
+
+@media (max-width: 576px) {
+    .mobile-hidden {
+        display: none;
+    }
+}

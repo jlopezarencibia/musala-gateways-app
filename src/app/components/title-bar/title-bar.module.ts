@@ -1,24 +1,22 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { GatewayListComponent } from './gateway-list.component';
+import { TitleBarComponent } from './title-bar.component';
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
-import {NgbPaginationModule} from "@ng-bootstrap/ng-bootstrap";
 import {RouterModule} from "@angular/router";
 
 
 
 @NgModule({
     declarations: [
-        GatewayListComponent
+        TitleBarComponent
     ],
     exports: [
-        GatewayListComponent
+        TitleBarComponent
     ],
     imports: [
         CommonModule,
         FontAwesomeModule,
-        NgbPaginationModule,
-        RouterModule.forChild([{path: '', component: GatewayListComponent}])
+        RouterModule
     ]
 })
-export class GatewayListModule { }
+export class TitleBarModule { }
