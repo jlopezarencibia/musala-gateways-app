@@ -36,7 +36,7 @@
         </div>
         <div class="card-footer">
             <div class="d-flex justify-content-between" *ngIf="!(loading$ | async); else loading">
-                <button routerLink="/" class="btn btn-link">Cancel</button>
+                <button (click)="goBack()" class="btn btn-link">Cancel</button>
                 <button class="btn btn-primary" type="submit">
                     <fa-icon [icon]="icSave" class="mr-2"></fa-icon>
                     Save

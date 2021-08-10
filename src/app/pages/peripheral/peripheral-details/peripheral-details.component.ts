@@ -1,25 +1,25 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
+import {faArrowLeft, faEdit, faMicrochip, faNetworkWired, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
+import {Observable} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {AppService} from "../../../services/app.service";
-import {GatewayControllerService} from "../../../api/services";
-import {Observable} from "rxjs";
-import {Gateway} from "../../../api/models/gateway";
-import {Peripheral} from "../../../api/models/peripheral";
-import {faArrowLeft, faEdit, faMicrochip, faNetworkWired, faTrashAlt} from "@fortawesome/free-solid-svg-icons";
+import {GatewayControllerService} from "../../../api/services/gateway-controller.service";
 import {Location} from "@angular/common";
 import {AutoUnsubscribe} from "ngx-auto-unsubscribe";
+import {Gateway} from "../../../api/models/gateway";
+import {Peripheral} from "../../../api/models/peripheral";
+import {PeripheralControllerService} from "../../../api/services/peripheral-controller.service";
 
 @AutoUnsubscribe()
 @Component({
-    selector: 'app-gateway-details',
-    templateUrl: './gateway-details.component.html',
-    styleUrls: ['./gateway-details.component.scss']
+    selector: 'app-peripheral-details',
+    templateUrl: './peripheral-details.component.html',
+    styleUrls: ['./peripheral-details.component.scss']
 })
-export class GatewayDetailsComponent implements OnInit, OnDestroy {
+export class PeripheralDetailsComponent implements OnInit, OnDestroy {
 
     // async
-    gateway$?: Observable<Gateway>;
-    peripherals$?: Observable<Peripheral[]>;
+    peripheral$?: Observable<Peripheral>;
 
     // icons
     icGateway = faNetworkWired;
@@ -38,26 +38,26 @@ export class GatewayDetailsComponent implements OnInit, OnDestroy {
     constructor(
         private readonly activatedRoute: ActivatedRoute,
         private readonly gatewayController: GatewayControllerService,
+        private readonly peripheralController: PeripheralControllerService,
         private readonly appService: AppService,
         private readonly location: Location
     ) {
         this.appService.setPath(activatedRoute.snapshot.data.path);
         this.title = activatedRoute.snapshot.data.name;
-
         const id = activatedRoute.snapshot.params.id;
-
-        this.gateway$ = this.gatewayController.findGatewayById({id});
-        this.peripherals$ = this.gatewayController.getPeripherals({id});
+        this.peripheral$ = this.peripheralController.findPeripheralById({id});
     }
 
     ngOnInit(): void {
     }
 
-    goBack = () => { this.location.back()}
+    goBack = () => {
+        this.location.back()
+    }
 
     delete = (id: number) => {
         if (this.confirmed) {
-            this.gatewayController.deleteGateway({id}).subscribe(
+            this.peripheralController.deletePeripheral({id}).subscribe(
                 response => {
                     console.log('Deleted...');
                     console.log(response);

@@ -27,23 +27,25 @@ export class GatewayControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation getGatewaysPaged
+   * Path part for operation addPeripheral
    */
-  static readonly GetGatewaysPagedPath = '/api/gateway';
+  static readonly AddPeripheralPath = '/api/gateway/peripheral/add/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getGatewaysPaged()` instead.
+   * To access only the response body, use `addPeripheral()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
-  getGatewaysPaged$Response(params: {
-    options: PageSort;
-  }): Observable<StrictHttpResponse<Array<Gateway>>> {
+  addPeripheral$Response(params: {
+    id: number;
+    body: PeripheralDao
+  }): Observable<StrictHttpResponse<Peripheral>> {
 
-    const rb = new RequestBuilder(this.rootUrl, GatewayControllerService.GetGatewaysPagedPath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, GatewayControllerService.AddPeripheralPath, 'post');
     if (params) {
-      rb.query('options', params.options, {});
+      rb.path('id', params.id, {});
+      rb.body(params.body, 'application/json');
     }
 
     return this.http.request(rb.build({
@@ -52,30 +54,31 @@ export class GatewayControllerService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<Gateway>>;
+        return r as StrictHttpResponse<Peripheral>;
       })
     );
   }
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getGatewaysPaged$Response()` instead.
+   * To access the full response (for headers, for example), `addPeripheral$Response()` instead.
    *
-   * This method doesn't expect any request body.
+   * This method sends `application/json` and handles request body of type `application/json`.
    */
-  getGatewaysPaged(params: {
-    options: PageSort;
-  }): Observable<Array<Gateway>> {
+  addPeripheral(params: {
+    id: number;
+    body: PeripheralDao
+  }): Observable<Peripheral> {
 
-    return this.getGatewaysPaged$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<Gateway>>) => r.body as Array<Gateway>)
+    return this.addPeripheral$Response(params).pipe(
+      map((r: StrictHttpResponse<Peripheral>) => r.body as Peripheral)
     );
   }
 
   /**
    * Path part for operation createGateway
    */
-  static readonly CreateGatewayPath = '/api/gateway';
+  static readonly CreateGatewayPath = '/api/gateway/create';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -119,150 +122,9 @@ export class GatewayControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation addPeripheral
-   */
-  static readonly AddPeripheralPath = '/api/gateway/{gatewayId}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `addPeripheral()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  addPeripheral$Response(params: {
-    gatewayId: number;
-    body: PeripheralDao
-  }): Observable<StrictHttpResponse<Peripheral>> {
-
-    const rb = new RequestBuilder(this.rootUrl, GatewayControllerService.AddPeripheralPath, 'post');
-    if (params) {
-      rb.path('gatewayId', params.gatewayId, {});
-      rb.body(params.body, 'application/json');
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json'
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Peripheral>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `addPeripheral$Response()` instead.
-   *
-   * This method sends `application/json` and handles request body of type `application/json`.
-   */
-  addPeripheral(params: {
-    gatewayId: number;
-    body: PeripheralDao
-  }): Observable<Peripheral> {
-
-    return this.addPeripheral$Response(params).pipe(
-      map((r: StrictHttpResponse<Peripheral>) => r.body as Peripheral)
-    );
-  }
-
-  /**
-   * Path part for operation findGatewayById
-   */
-  static readonly FindGatewayByIdPath = '/api/gateway/{id}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `findGatewayById()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  findGatewayById$Response(params: {
-    id: number;
-  }): Observable<StrictHttpResponse<Gateway>> {
-
-    const rb = new RequestBuilder(this.rootUrl, GatewayControllerService.FindGatewayByIdPath, 'get');
-    if (params) {
-      rb.path('id', params.id, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json'
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Gateway>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `findGatewayById$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  findGatewayById(params: {
-    id: number;
-  }): Observable<Gateway> {
-
-    return this.findGatewayById$Response(params).pipe(
-      map((r: StrictHttpResponse<Gateway>) => r.body as Gateway)
-    );
-  }
-
-  /**
-   * Path part for operation deleteGateway
-   */
-  static readonly DeleteGatewayPath = '/api/gateway/{id}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `deleteGateway()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  deleteGateway$Response(params: {
-    id: number;
-  }): Observable<StrictHttpResponse<Gateway>> {
-
-    const rb = new RequestBuilder(this.rootUrl, GatewayControllerService.DeleteGatewayPath, 'delete');
-    if (params) {
-      rb.path('id', params.id, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json'
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Gateway>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `deleteGateway$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  deleteGateway(params: {
-    id: number;
-  }): Observable<Gateway> {
-
-    return this.deleteGateway$Response(params).pipe(
-      map((r: StrictHttpResponse<Gateway>) => r.body as Gateway)
-    );
-  }
-
-  /**
    * Path part for operation updateGateway
    */
-  static readonly UpdateGatewayPath = '/api/gateway/{id}';
+  static readonly UpdateGatewayPath = '/api/gateway/update/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -304,6 +166,144 @@ export class GatewayControllerService extends BaseService {
   }): Observable<Gateway> {
 
     return this.updateGateway$Response(params).pipe(
+      map((r: StrictHttpResponse<Gateway>) => r.body as Gateway)
+    );
+  }
+
+  /**
+   * Path part for operation getPeripherals
+   */
+  static readonly GetPeripheralsPath = '/api/gateway/peripherals/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getPeripherals()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getPeripherals$Response(params: {
+    id: number;
+  }): Observable<StrictHttpResponse<Array<Peripheral>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, GatewayControllerService.GetPeripheralsPath, 'get');
+    if (params) {
+      rb.path('id', params.id, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<Peripheral>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `getPeripherals$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getPeripherals(params: {
+    id: number;
+  }): Observable<Array<Peripheral>> {
+
+    return this.getPeripherals$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<Peripheral>>) => r.body as Array<Peripheral>)
+    );
+  }
+
+  /**
+   * Path part for operation getGatewaysPaged
+   */
+  static readonly GetGatewaysPagedPath = '/api/gateway/paged';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getGatewaysPaged()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getGatewaysPaged$Response(params: {
+    options: PageSort;
+  }): Observable<StrictHttpResponse<Array<Gateway>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, GatewayControllerService.GetGatewaysPagedPath, 'get');
+    if (params) {
+      rb.query('options', params.options, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<Gateway>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `getGatewaysPaged$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getGatewaysPaged(params: {
+    options: PageSort;
+  }): Observable<Array<Gateway>> {
+
+    return this.getGatewaysPaged$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<Gateway>>) => r.body as Array<Gateway>)
+    );
+  }
+
+  /**
+   * Path part for operation findGatewayById
+   */
+  static readonly FindGatewayByIdPath = '/api/gateway/get/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `findGatewayById()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  findGatewayById$Response(params: {
+    id: number;
+  }): Observable<StrictHttpResponse<Gateway>> {
+
+    const rb = new RequestBuilder(this.rootUrl, GatewayControllerService.FindGatewayByIdPath, 'get');
+    if (params) {
+      rb.path('id', params.id, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Gateway>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `findGatewayById$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  findGatewayById(params: {
+    id: number;
+  }): Observable<Gateway> {
+
+    return this.findGatewayById$Response(params).pipe(
       map((r: StrictHttpResponse<Gateway>) => r.body as Gateway)
     );
   }
@@ -352,23 +352,23 @@ export class GatewayControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation findGatewayByName
+   * Path part for operation deleteGateway
    */
-  static readonly FindGatewayByNamePath = '/api/gateway/by-name/{term}';
+  static readonly DeleteGatewayPath = '/api/gateway/delete/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `findGatewayByName()` instead.
+   * To access only the response body, use `deleteGateway()` instead.
    *
    * This method doesn't expect any request body.
    */
-  findGatewayByName$Response(params: {
-    term: string;
-  }): Observable<StrictHttpResponse<Array<Gateway>>> {
+  deleteGateway$Response(params: {
+    id: number;
+  }): Observable<StrictHttpResponse<Gateway>> {
 
-    const rb = new RequestBuilder(this.rootUrl, GatewayControllerService.FindGatewayByNamePath, 'get');
+    const rb = new RequestBuilder(this.rootUrl, GatewayControllerService.DeleteGatewayPath, 'delete');
     if (params) {
-      rb.path('term', params.term, {});
+      rb.path('id', params.id, {});
     }
 
     return this.http.request(rb.build({
@@ -377,23 +377,23 @@ export class GatewayControllerService extends BaseService {
     })).pipe(
       filter((r: any) => r instanceof HttpResponse),
       map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<Gateway>>;
+        return r as StrictHttpResponse<Gateway>;
       })
     );
   }
 
   /**
    * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `findGatewayByName$Response()` instead.
+   * To access the full response (for headers, for example), `deleteGateway$Response()` instead.
    *
    * This method doesn't expect any request body.
    */
-  findGatewayByName(params: {
-    term: string;
-  }): Observable<Array<Gateway>> {
+  deleteGateway(params: {
+    id: number;
+  }): Observable<Gateway> {
 
-    return this.findGatewayByName$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<Gateway>>) => r.body as Array<Gateway>)
+    return this.deleteGateway$Response(params).pipe(
+      map((r: StrictHttpResponse<Gateway>) => r.body as Gateway)
     );
   }
 

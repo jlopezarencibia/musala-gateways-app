@@ -25,55 +25,9 @@ export class PeripheralControllerService extends BaseService {
   }
 
   /**
-   * Path part for operation getPeripheralsPaged
-   */
-  static readonly GetPeripheralsPagedPath = '/api/peripheral';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `getPeripheralsPaged()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  getPeripheralsPaged$Response(params: {
-    options: PageSort;
-  }): Observable<StrictHttpResponse<Array<Peripheral>>> {
-
-    const rb = new RequestBuilder(this.rootUrl, PeripheralControllerService.GetPeripheralsPagedPath, 'get');
-    if (params) {
-      rb.query('options', params.options, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json'
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Array<Peripheral>>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `getPeripheralsPaged$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  getPeripheralsPaged(params: {
-    options: PageSort;
-  }): Observable<Array<Peripheral>> {
-
-    return this.getPeripheralsPaged$Response(params).pipe(
-      map((r: StrictHttpResponse<Array<Peripheral>>) => r.body as Array<Peripheral>)
-    );
-  }
-
-  /**
    * Path part for operation createPeripheral
    */
-  static readonly CreatePeripheralPath = '/api/peripheral';
+  static readonly CreatePeripheralPath = '/api/peripheral/create';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -119,7 +73,7 @@ export class PeripheralControllerService extends BaseService {
   /**
    * Path part for operation updatePeripheral
    */
-  static readonly UpdatePeripheralPath = '/api/peripheral';
+  static readonly UpdatePeripheralPath = '/api/peripheral/update/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -128,11 +82,13 @@ export class PeripheralControllerService extends BaseService {
    * This method sends `application/json` and handles request body of type `application/json`.
    */
   updatePeripheral$Response(params: {
-    body: Peripheral
+    id: number;
+    body: PeripheralDao
   }): Observable<StrictHttpResponse<Peripheral>> {
 
     const rb = new RequestBuilder(this.rootUrl, PeripheralControllerService.UpdatePeripheralPath, 'patch');
     if (params) {
+      rb.path('id', params.id, {});
       rb.body(params.body, 'application/json');
     }
 
@@ -154,7 +110,8 @@ export class PeripheralControllerService extends BaseService {
    * This method sends `application/json` and handles request body of type `application/json`.
    */
   updatePeripheral(params: {
-    body: Peripheral
+    id: number;
+    body: PeripheralDao
   }): Observable<Peripheral> {
 
     return this.updatePeripheral$Response(params).pipe(
@@ -163,9 +120,55 @@ export class PeripheralControllerService extends BaseService {
   }
 
   /**
+   * Path part for operation getPeripheralsPaged
+   */
+  static readonly GetPeripheralsPagedPath = '/api/peripheral/paged';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `getPeripheralsPaged()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getPeripheralsPaged$Response(params: {
+    options: PageSort;
+  }): Observable<StrictHttpResponse<Array<Peripheral>>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PeripheralControllerService.GetPeripheralsPagedPath, 'get');
+    if (params) {
+      rb.query('options', params.options, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Array<Peripheral>>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `getPeripheralsPaged$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  getPeripheralsPaged(params: {
+    options: PageSort;
+  }): Observable<Array<Peripheral>> {
+
+    return this.getPeripheralsPaged$Response(params).pipe(
+      map((r: StrictHttpResponse<Array<Peripheral>>) => r.body as Array<Peripheral>)
+    );
+  }
+
+  /**
    * Path part for operation findPeripheralById
    */
-  static readonly FindPeripheralByIdPath = '/api/peripheral/{id}';
+  static readonly FindPeripheralByIdPath = '/api/peripheral/get/{id}';
 
   /**
    * This method provides access to the full `HttpResponse`, allowing access to response headers.
@@ -204,52 +207,6 @@ export class PeripheralControllerService extends BaseService {
   }): Observable<Peripheral> {
 
     return this.findPeripheralById$Response(params).pipe(
-      map((r: StrictHttpResponse<Peripheral>) => r.body as Peripheral)
-    );
-  }
-
-  /**
-   * Path part for operation deletePeripheral
-   */
-  static readonly DeletePeripheralPath = '/api/peripheral/{id}';
-
-  /**
-   * This method provides access to the full `HttpResponse`, allowing access to response headers.
-   * To access only the response body, use `deletePeripheral()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  deletePeripheral$Response(params: {
-    id: number;
-  }): Observable<StrictHttpResponse<Peripheral>> {
-
-    const rb = new RequestBuilder(this.rootUrl, PeripheralControllerService.DeletePeripheralPath, 'delete');
-    if (params) {
-      rb.path('id', params.id, {});
-    }
-
-    return this.http.request(rb.build({
-      responseType: 'json',
-      accept: 'application/json'
-    })).pipe(
-      filter((r: any) => r instanceof HttpResponse),
-      map((r: HttpResponse<any>) => {
-        return r as StrictHttpResponse<Peripheral>;
-      })
-    );
-  }
-
-  /**
-   * This method provides access to only to the response body.
-   * To access the full response (for headers, for example), `deletePeripheral$Response()` instead.
-   *
-   * This method doesn't expect any request body.
-   */
-  deletePeripheral(params: {
-    id: number;
-  }): Observable<Peripheral> {
-
-    return this.deletePeripheral$Response(params).pipe(
       map((r: StrictHttpResponse<Peripheral>) => r.body as Peripheral)
     );
   }
@@ -294,6 +251,52 @@ export class PeripheralControllerService extends BaseService {
 
     return this.peripheralCount$Response(params).pipe(
       map((r: StrictHttpResponse<number>) => r.body as number)
+    );
+  }
+
+  /**
+   * Path part for operation deletePeripheral
+   */
+  static readonly DeletePeripheralPath = '/api/peripheral/delete/{id}';
+
+  /**
+   * This method provides access to the full `HttpResponse`, allowing access to response headers.
+   * To access only the response body, use `deletePeripheral()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  deletePeripheral$Response(params: {
+    id: number;
+  }): Observable<StrictHttpResponse<Peripheral>> {
+
+    const rb = new RequestBuilder(this.rootUrl, PeripheralControllerService.DeletePeripheralPath, 'delete');
+    if (params) {
+      rb.path('id', params.id, {});
+    }
+
+    return this.http.request(rb.build({
+      responseType: 'json',
+      accept: 'application/json'
+    })).pipe(
+      filter((r: any) => r instanceof HttpResponse),
+      map((r: HttpResponse<any>) => {
+        return r as StrictHttpResponse<Peripheral>;
+      })
+    );
+  }
+
+  /**
+   * This method provides access to only to the response body.
+   * To access the full response (for headers, for example), `deletePeripheral$Response()` instead.
+   *
+   * This method doesn't expect any request body.
+   */
+  deletePeripheral(params: {
+    id: number;
+  }): Observable<Peripheral> {
+
+    return this.deletePeripheral$Response(params).pipe(
+      map((r: StrictHttpResponse<Peripheral>) => r.body as Peripheral)
     );
   }
 

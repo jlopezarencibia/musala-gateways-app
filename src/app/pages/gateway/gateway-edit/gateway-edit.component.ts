@@ -1,11 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute} from "@angular/router";
 import {AppService} from "../../../services/app.service";
 import {faSave, faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {GatewayControllerService} from "../../../api/services/gateway-controller.service";
 import {from, Observable, of, Subject} from "rxjs";
 import {mapTo, mergeAll, switchMap, tap} from "rxjs/operators";
 import {AutoUnsubscribe} from "ngx-auto-unsubscribe";
+import {Location} from "@angular/common";
 
 @AutoUnsubscribe()
 @Component({
@@ -24,6 +25,7 @@ export class GatewayEditComponent implements OnInit, OnDestroy {
     icSpinner = faSpinner;
 
     // form
+    id = -1;
     name = '';
     serial = '';
     ip = '';
@@ -37,16 +39,30 @@ export class GatewayEditComponent implements OnInit, OnDestroy {
 
     constructor(
         private readonly activatedRoute: ActivatedRoute,
-        private readonly router: Router,
         private readonly appService: AppService,
-        private readonly gatewayController: GatewayControllerService
+        private readonly gatewayController: GatewayControllerService,
+        private readonly location: Location
     ) {
         this.title = activatedRoute.snapshot.data.name;
         this.appService.setPath(activatedRoute.snapshot.data.path);
-        this.actionMode = String(activatedRoute.snapshot.data.path).includes('create') ? 'create' : 'edit';
+        this.actionMode = String(activatedRoute.snapshot.data.path).includes('create') ? 'create' : 'update';
     }
 
     ngOnInit(): void {
+        console.log(this.actionMode)
+        if (this.actionMode == 'update') {
+            this.id = this.activatedRoute.snapshot.params.id;
+            this.gatewayController.findGatewayById({id: this.id}).subscribe(
+                result => {
+                    this.name = result.name!;
+                    this.ip = result.ipv4!;
+                    this.serial = result.serial!;
+                },
+                error => {
+                    this.location.back();
+                }
+            )
+        }
         const newGateway = this.gatewaySubject$.pipe(
             tap((mode) => console.log('Action mode: ', mode)),
             switchMap((mode) => {
@@ -68,7 +84,7 @@ export class GatewayEditComponent implements OnInit, OnDestroy {
                             response => {
                                 console.log('Created...')
                                 console.log(response);
-                                this.router.navigateByUrl('/').then();
+                                this.location.back();
                             },
                             error => {
                                 console.log(error);
@@ -77,6 +93,23 @@ export class GatewayEditComponent implements OnInit, OnDestroy {
                         );
                         return of(false);
                     } else {
+                        this.gatewayController.updateGateway({
+                            id: this.id, body: {
+                                name: this.name,
+                                serial: this.serial,
+                                ipv4: this.ip
+                            }
+                        }).subscribe(
+                            response => {
+                                console.log('Updated...');
+                                console.log(response);
+                                this.location.back();
+                            },
+                            error => {
+                                console.log(error);
+                                this.formError = true;
+                            }
+                        )
                         return of(false);
                     }
                 }
@@ -103,6 +136,9 @@ export class GatewayEditComponent implements OnInit, OnDestroy {
         this.ip.trim().length != 0 &&
         !!this.ip.match('^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$'));
 
+    goBack = () => {
+        this.location.back();
+    }
     ngOnDestroy() {
     }
 }

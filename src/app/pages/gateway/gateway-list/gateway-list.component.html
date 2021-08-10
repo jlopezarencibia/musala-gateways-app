@@ -7,21 +7,30 @@
         </button>
     </div>
 </div>
-<div class="card">
+<div class="card" *ngIf="!(loading$ | async)">
+    <div class="card-header row mx-0 align-items-center justify-content-end">
+        <div class="col-md-6 col-lg-4 p-0 m-0 d-flex text-nowrap align-items-center">
+            Sort by:
+            <select class="custom-select ml-3" [(ngModel)]="sortOption" (ngModelChange)="doSort()">
+                <option [value]="'nameAsc'">Name (ASC)</option>
+                <option [value]="'nameDesc'">Name (DESC)</option>
+                <option [value]="'ipASc'">IP (ASC)</option>
+                <option [value]="'ipDesc'">IP (DESC)</option>
+            </select>
+        </div>
+    </div>
     <div class="card-body">
-        <div *ngIf="!(loading$ | async)">
-            <div *ngIf="gateways$ | async as gateways">
-                <div class="card my-1" *ngFor="let gateway of gateways">
-                    <div class="px-3 py-2 d-flex align-items-center">
-                        <div class="flex-grow-1">
-                            <div class="font-weight-bold">{{gateway.name}}</div>
-                            <div class="text-muted small">{{gateway.ipv4}}</div>
-                        </div>
-                        <div>
-                            <button class="btn btn-link btn-sm" [routerLink]="['gateway',gateway.id]">
-                                <span>Details</span>
-                            </button>
-                        </div>
+        <div *ngIf="gateways$ | async as gateways">
+            <div class="card my-1" *ngFor="let gateway of gateways">
+                <div class="px-3 py-2 d-flex align-items-center">
+                    <div class="flex-grow-1">
+                        <div class="font-weight-bold">{{gateway.name}}</div>
+                        <div class="text-muted small">{{gateway.ipv4}}</div>
+                    </div>
+                    <div>
+                        <button class="btn btn-link btn-sm" [routerLink]="['/gateway','details', gateway.id]">
+                            <span>Details</span>
+                        </button>
                     </div>
                 </div>
             </div>

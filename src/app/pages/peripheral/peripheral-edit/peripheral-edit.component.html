@@ -1,1 +1,57 @@
-<p>peripheral-edit works!</p>
+<div class="mb-4 d-flex align-items-center">
+    <div class="flex-grow-1 h4 m-0">{{title}}</div>
+</div>
+<div class="card">
+    <form (ngSubmit)="submit()">
+        <div class="card-body">
+            <div class="row" *ngIf="gateways$ | async as gateways">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="gateway">Gateway</label>
+                        <select class=" custom-select" id="gateway" name="gateway" required
+                               [(ngModel)]="gatewayId">
+                            <option disabled selected [value]="undefined">Select gateway</option>
+                            <option *ngFor="let g of gateways" [value]="g.id">{{g.name}}</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="vendor">Vendor</label>
+                        <input class="form-control" type="text" id="vendor" name="vendor" required
+                               [(ngModel)]="vendor">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="uid">UID</label>
+                        <input class="form-control" type="number" id="uid" name="uid" required
+                               [(ngModel)]="uid">
+                    </div>
+                </div>
+            </div>
+            <ngb-alert type="danger" [dismissible]="false" class="mb-0" *ngIf="formError">
+                <div class="font-weight-bold">There are errors in the form</div>
+                <div class="small" style="opacity: .75">
+                    Please check that all the fields are filled and the UID is not already present.
+                </div>
+            </ngb-alert>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between" *ngIf="!(loading$ | async); else loading">
+                <button (click)="goBack()" class="btn btn-link">Cancel</button>
+                <button class="btn btn-primary" type="submit">
+                    <fa-icon [icon]="icSave" class="mr-2"></fa-icon>
+                    Save
+                </button>
+            </div>
+            <ng-template #loading>
+                <div class="d-flex align-items-center justify-content-center">
+                    <fa-icon [icon]="icSpinner" [spin]="true" class="text-primary" size="2x"></fa-icon>
+                </div>
+            </ng-template>
+        </div>
+    </form>
+</div>
+
+

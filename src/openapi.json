@@ -11,38 +11,7 @@
         }
     ],
     "paths": {
-        "/api/peripheral": {
-            "get": {
-                "tags": [
-                    "peripheral-controller"
-                ],
-                "operationId": "getPeripheralsPaged",
-                "parameters": [
-                    {
-                        "name": "options",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/PageSort"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Peripheral"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
+        "/api/peripheral/create": {
             "post": {
                 "tags": [
                     "peripheral-controller"
@@ -70,17 +39,30 @@
                         }
                     }
                 }
-            },
-            "patch": {
+            }
+        },
+        "/api/gateway/peripheral/add/{id}": {
+            "post": {
                 "tags": [
-                    "peripheral-controller"
+                    "gateway-controller"
                 ],
-                "operationId": "updatePeripheral",
+                "operationId": "addPeripheral",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/Peripheral"
+                                "$ref": "#/components/schemas/PeripheralDao"
                             }
                         }
                     },
@@ -100,38 +82,7 @@
                 }
             }
         },
-        "/api/gateway": {
-            "get": {
-                "tags": [
-                    "gateway-controller"
-                ],
-                "operationId": "getGatewaysPaged",
-                "parameters": [
-                    {
-                        "name": "options",
-                        "in": "query",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/components/schemas/PageSort"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Gateway"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            },
+        "/api/gateway/create": {
             "post": {
                 "tags": [
                     "gateway-controller"
@@ -161,15 +112,15 @@
                 }
             }
         },
-        "/api/gateway/{gatewayId}": {
-            "post": {
+        "/api/peripheral/update/{id}": {
+            "patch": {
                 "tags": [
-                    "gateway-controller"
+                    "peripheral-controller"
                 ],
-                "operationId": "addPeripheral",
+                "operationId": "updatePeripheral",
                 "parameters": [
                     {
-                        "name": "gatewayId",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
@@ -202,65 +153,7 @@
                 }
             }
         },
-        "/api/gateway/{id}": {
-            "get": {
-                "tags": [
-                    "gateway-controller"
-                ],
-                "operationId": "findGatewayById",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Gateway"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "gateway-controller"
-                ],
-                "operationId": "deleteGateway",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "required": true,
-                        "schema": {
-                            "type": "integer",
-                            "format": "int64"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/Gateway"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
+        "/api/gateway/update/{id}": {
             "patch": {
                 "tags": [
                     "gateway-controller"
@@ -301,20 +194,19 @@
                 }
             }
         },
-        "/api/peripheral/{id}": {
+        "/api/peripheral/paged": {
             "get": {
                 "tags": [
                     "peripheral-controller"
                 ],
-                "operationId": "findPeripheralById",
+                "operationId": "getPeripheralsPaged",
                 "parameters": [
                     {
-                        "name": "id",
-                        "in": "path",
+                        "name": "options",
+                        "in": "query",
                         "required": true,
                         "schema": {
-                            "type": "integer",
-                            "format": "int64"
+                            "$ref": "#/components/schemas/PageSort"
                         }
                     }
                 ],
@@ -324,18 +216,23 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/Peripheral"
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Peripheral"
+                                    }
                                 }
                             }
                         }
                     }
                 }
-            },
-            "delete": {
+            }
+        },
+        "/api/peripheral/get/{id}": {
+            "get": {
                 "tags": [
                     "peripheral-controller"
                 ],
-                "operationId": "deletePeripheral",
+                "operationId": "findPeripheralById",
                 "parameters": [
                     {
                         "name": "id",
@@ -382,6 +279,104 @@
                 }
             }
         },
+        "/api/gateway/peripherals/{id}": {
+            "get": {
+                "tags": [
+                    "gateway-controller"
+                ],
+                "operationId": "getPeripherals",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Peripheral"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/gateway/paged": {
+            "get": {
+                "tags": [
+                    "gateway-controller"
+                ],
+                "operationId": "getGatewaysPaged",
+                "parameters": [
+                    {
+                        "name": "options",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/components/schemas/PageSort"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Gateway"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/gateway/get/{id}": {
+            "get": {
+                "tags": [
+                    "gateway-controller"
+                ],
+                "operationId": "findGatewayById",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Gateway"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/gateway/count": {
             "get": {
                 "tags": [
@@ -403,19 +398,20 @@
                 }
             }
         },
-        "/api/gateway/by-name/{term}": {
-            "get": {
+        "/api/peripheral/delete/{id}": {
+            "delete": {
                 "tags": [
-                    "gateway-controller"
+                    "peripheral-controller"
                 ],
-                "operationId": "findGatewayByName",
+                "operationId": "deletePeripheral",
                 "parameters": [
                     {
-                        "name": "term",
+                        "name": "id",
                         "in": "path",
                         "required": true,
                         "schema": {
-                            "type": "string"
+                            "type": "integer",
+                            "format": "int64"
                         }
                     }
                 ],
@@ -425,10 +421,38 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/Gateway"
-                                    }
+                                    "$ref": "#/components/schemas/Peripheral"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/gateway/delete/{id}": {
+            "delete": {
+                "tags": [
+                    "gateway-controller"
+                ],
+                "operationId": "deleteGateway",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "format": "int64"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Gateway"
                                 }
                             }
                         }
@@ -448,6 +472,10 @@
                     },
                     "vendor": {
                         "type": "string"
+                    },
+                    "gatewayId": {
+                        "type": "integer",
+                        "format": "int64"
                     }
                 }
             },

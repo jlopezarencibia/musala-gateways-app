@@ -1,5 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {faChevronRight, faNetworkWired, faPlus} from "@fortawesome/free-solid-svg-icons";
+import {
+    faPlus,
+} from "@fortawesome/free-solid-svg-icons";
 import {GatewayControllerService} from "../../../api/services/gateway-controller.service";
 import {AppService} from "../../../services/app.service";
 import {ActivatedRoute} from "@angular/router";
@@ -17,16 +19,15 @@ import {AutoUnsubscribe} from "ngx-auto-unsubscribe";
 export class GatewayListComponent implements OnInit, OnDestroy {
 
     //icons
-    icChevRight = faChevronRight;
     icPlus = faPlus;
 
     //page
-    depth: number;
     title: string;
     page = 1;
-    sortBy = 'ipv4';
-    pageSize = 2;
+    sortBy = 'name';
+    pageSize = 8;
     sortDirection = 'ASC';
+    sortOption: 'nameAsc' | 'nameDesc' | 'ipAsc' | 'ipDesc' = 'nameAsc';
 
     // async
     gatewaySubject$ = new BehaviorSubject(this.sortBy);
@@ -40,11 +41,9 @@ export class GatewayListComponent implements OnInit, OnDestroy {
         private readonly appService: AppService
     ) {
         this.appService.setPath(activatedRoute.snapshot.data.path);
-        this.depth = activatedRoute.snapshot.data.depth;
         this.title = activatedRoute.snapshot.data.name;
 
         const fetch = this.gatewaySubject$.pipe(
-            tap(() => console.log('Fetching...')),
             switchMap((sortBy) => {
                 this.gateways$ = this.gatewayController.getGatewaysPaged({
                     options: {
@@ -69,5 +68,31 @@ export class GatewayListComponent implements OnInit, OnDestroy {
     }
 
     switchPage = () => this.gatewaySubject$.next(this.sortBy);
+
+    doSort = () => {
+        switch (this.sortOption) {
+            case 'nameAsc': {
+                this.sortBy = 'name';
+                this.sortDirection = 'ASC';
+                break;
+            }
+            case 'nameDesc': {
+                this.sortBy = 'name';
+                this.sortDirection = 'DESC';
+                break;
+            }
+            case 'ipAsc': {
+                this.sortBy = 'ipv4';
+                this.sortDirection = 'ASC';
+                break;
+            }
+            case 'ipDesc': {
+                this.sortBy = 'ipv4';
+                this.sortDirection = 'DESC';
+                break;
+            }
+        }
+        this.gatewaySubject$.next(this.sortBy);
+    }
 
 }
