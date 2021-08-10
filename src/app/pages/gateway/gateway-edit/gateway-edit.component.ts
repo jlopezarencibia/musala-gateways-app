@@ -4,7 +4,7 @@ import {AppService} from "../../../services/app.service";
 import {faSave, faSpinner} from "@fortawesome/free-solid-svg-icons";
 import {GatewayControllerService} from "../../../api/services/gateway-controller.service";
 import {from, Observable, of, Subject} from "rxjs";
-import {mapTo, mergeAll, switchMap, tap} from "rxjs/operators";
+import {mapTo, mergeAll, switchMap} from "rxjs/operators";
 import {AutoUnsubscribe} from "ngx-auto-unsubscribe";
 import {Location} from "@angular/common";
 
@@ -49,7 +49,6 @@ export class GatewayEditComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        console.log(this.actionMode)
         if (this.actionMode == 'update') {
             this.id = this.activatedRoute.snapshot.params.id;
             this.gatewayController.findGatewayById({id: this.id}).subscribe(
@@ -58,21 +57,18 @@ export class GatewayEditComponent implements OnInit, OnDestroy {
                     this.ip = result.ipv4!;
                     this.serial = result.serial!;
                 },
-                error => {
+                () => {
                     this.location.back();
                 }
             )
         }
         const newGateway = this.gatewaySubject$.pipe(
-            tap((mode) => console.log('Action mode: ', mode)),
             switchMap((mode) => {
                 if (!this.isFormValid()) { // Invalid form
                     // Invalid form
                     this.formError = true;
-                    console.log('Invalid form!');
                     return of(false);
                 } else { // Valid form
-                    console.log('Valid form!');
                     if (mode == 'create') {
                         this.gatewayController.createGateway({
                             body: {
@@ -81,13 +77,10 @@ export class GatewayEditComponent implements OnInit, OnDestroy {
                                 ipv4: this.ip
                             }
                         }).subscribe(
-                            response => {
-                                console.log('Created...')
-                                console.log(response);
+                            () => {
                                 this.location.back();
                             },
-                            error => {
-                                console.log(error);
+                            () => {
                                 this.formError = true;
                             }
                         );
@@ -100,13 +93,10 @@ export class GatewayEditComponent implements OnInit, OnDestroy {
                                 ipv4: this.ip
                             }
                         }).subscribe(
-                            response => {
-                                console.log('Updated...');
-                                console.log(response);
+                            () => {
                                 this.location.back();
                             },
-                            error => {
-                                console.log(error);
+                            () => {
                                 this.formError = true;
                             }
                         )

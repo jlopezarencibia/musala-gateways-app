@@ -6,7 +6,6 @@ import {AppService} from "../../../services/app.service";
 import {GatewayControllerService} from "../../../api/services/gateway-controller.service";
 import {Location} from "@angular/common";
 import {AutoUnsubscribe} from "ngx-auto-unsubscribe";
-import {Gateway} from "../../../api/models/gateway";
 import {Peripheral} from "../../../api/models/peripheral";
 import {PeripheralControllerService} from "../../../api/services/peripheral-controller.service";
 
@@ -58,9 +57,7 @@ export class PeripheralDetailsComponent implements OnInit, OnDestroy {
     delete = (id: number) => {
         if (this.confirmed) {
             this.peripheralController.deletePeripheral({id}).subscribe(
-                response => {
-                    console.log('Deleted...');
-                    console.log(response);
+                () => {
                     this.location.back();
                 }
             )

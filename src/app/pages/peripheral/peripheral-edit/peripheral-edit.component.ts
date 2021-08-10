@@ -4,7 +4,7 @@ import {from, Observable, of, Subject} from "rxjs";
 import {ActivatedRoute} from "@angular/router";
 import {AppService} from "../../../services/app.service";
 import {Location} from "@angular/common";
-import {mapTo, mergeAll, switchMap, tap} from "rxjs/operators";
+import {mapTo, mergeAll, switchMap} from "rxjs/operators";
 import {AutoUnsubscribe} from "ngx-auto-unsubscribe";
 import {PeripheralControllerService} from "../../../api/services/peripheral-controller.service";
 import {GatewayControllerService} from "../../../api/services/gateway-controller.service";
@@ -61,7 +61,6 @@ export class PeripheralEditComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit(): void {
-        console.log(this.actionMode)
         if (this.actionMode == 'update') {
             this.id = this.activatedRoute.snapshot.params.id;
             this.peripheralController.findPeripheralById({id: this.id}).subscribe(
@@ -70,21 +69,18 @@ export class PeripheralEditComponent implements OnInit, OnDestroy {
                     this.uid = result.uid! + '';
                     this.gatewayId = result.gateway!.id!
                 },
-                error => {
+                () => {
                     this.location.back();
                 }
             )
         }
         const newPeripheral = this.peripheralSubject$.pipe(
-            tap((mode) => console.log('Action mode: ', mode)),
             switchMap((mode) => {
                 if (!this.isFormValid()) { // Invalid form
                     // Invalid form
                     this.formError = true;
-                    console.log('Invalid form!');
                     return of(false);
                 } else { // Valid form
-                    console.log('Valid form!');
                     if (mode == 'create') {
                         this.peripheralController.createPeripheral({
                             body: {
@@ -93,13 +89,10 @@ export class PeripheralEditComponent implements OnInit, OnDestroy {
                                 gatewayId: this.gatewayId
                             }
                         }).subscribe(
-                            response => {
-                                console.log('Created...')
-                                console.log(response);
+                            () => {
                                 this.location.back();
                             },
-                            error => {
-                                console.log(error);
+                            () => {
                                 this.formError = true;
                             }
                         );
@@ -113,13 +106,10 @@ export class PeripheralEditComponent implements OnInit, OnDestroy {
                                 gatewayId: this.gatewayId
                             }
                         }).subscribe(
-                            response => {
-                                console.log('Updated...');
-                                console.log(response);
+                            () => {
                                 this.location.back();
                             },
-                            error => {
-                                console.log(error);
+                            () => {
                                 this.formError = true;
                             }
                         )

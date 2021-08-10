@@ -4,7 +4,7 @@ import {ActivatedRoute} from "@angular/router";
 import {AppService} from "../../../services/app.service";
 import {BehaviorSubject, from, Observable, of} from "rxjs";
 import {Peripheral} from "../../../api/models/peripheral";
-import {mapTo, mergeAll, switchMap, tap} from "rxjs/operators";
+import {mapTo, mergeAll, switchMap} from "rxjs/operators";
 import {PeripheralControllerService} from "../../../api/services/peripheral-controller.service";
 import {AutoUnsubscribe} from "ngx-auto-unsubscribe";
 
@@ -44,7 +44,6 @@ export class PeripheralListComponent implements OnInit, OnDestroy {
         this.title = activatedRoute.snapshot.data.name;
 
         const fetch = this.peripheralSubject$.pipe(
-            tap(() => console.log('Fetching...')),
             switchMap((sortBy) => {
                 this.peripheral$ = this.peripheralController.getPeripheralsPaged({
                     options: {

@@ -58,9 +58,7 @@ export class GatewayDetailsComponent implements OnInit, OnDestroy {
     delete = (id: number) => {
         if (this.confirmed) {
             this.gatewayController.deleteGateway({id}).subscribe(
-                response => {
-                    console.log('Deleted...');
-                    console.log(response);
+                () => {
                     this.location.back();
                 }
             )
